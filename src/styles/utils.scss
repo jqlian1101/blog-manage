@@ -1,0 +1,23 @@
+
+.clearfix:after,
+.clearfix:before {
+  content: "";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.fll {
+  float: left;
+}
+
+.flr {
+  float: right;
+}
+
+.scroll-touch {
+  -webkit-overflow-scrolling: touch;
+}
+
