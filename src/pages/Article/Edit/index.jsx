@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
+import { Form, Input, Select, Button } from 'antd';
 
 import SimpleMDE from 'simplemde'
 import marked from 'marked'
 import highlight from 'highlight.js'
 import 'simplemde/dist/simplemde.min.css';
 
-
-import { Form, Input, Select, Button } from 'antd';
+import articleService from 'src/services/article'
+import { useFetch } from 'src/utils/hooks'
 
 // import styles from './index.module.scss';
 
@@ -23,6 +24,14 @@ const validateMessages = {
 
 const CreateArticle = () => {
     let smde = null;
+    let tags = [];
+
+
+    const { response, error } = useFetch(articleService.getTagList)
+    console.log('useFetch response : ', response, error)
+    if (response) {
+        tags = response.data.result
+    }
 
     const onFinish = values => {
         console.log(values);
@@ -75,7 +84,7 @@ const CreateArticle = () => {
                     placeholder="请选择文章标签"
                 >
                     {
-                        [{ id: 1, name: 1 }].map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)
+                        tags.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)
                     }
                 </Select>
             </Form.Item>
