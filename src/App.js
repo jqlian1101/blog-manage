@@ -7,7 +7,6 @@ import { routers } from "./routers";
 const App = () => {
     return (
         <Switch>
-            {/* <Redirect exact from="/" to="/home" /> */}
             <Layout>
                 {routers.map((item, index) => {
                     return (

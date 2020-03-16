@@ -1,13 +1,13 @@
 import React from "react";
 
-import Index from "./pages/App";
+import ArticleEdit from "./pages/Article/Edit";
 
 export const routers = [
     {
         path: "/",
-        name: "Index",
-        component: () => <Index />,
+        name: "ArticleEdit",
+        component: () => <ArticleEdit />,
         exact: false,
-        title: "Index"
+        // title: "添加/修改"
     }
 ];
