@@ -1,3 +1,7 @@
+/**
+ * @description article相关api请求
+ */
+
 import request from "./utils/request";
 
 /**
@@ -5,6 +9,13 @@ import request from "./utils/request";
  */
 export const getTagList = params => request("/article/tag-list", { ...params });
 
+/**
+ * 创建文章文章
+ */
+export const createArticle = params =>
+    request("/article/create", { ...params });
+
 export default {
-    getTagList
+    getTagList,
+    createArticle
 };

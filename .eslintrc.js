@@ -2,6 +2,11 @@ module.exports = {
     extends: ["alloy", "alloy/react"],
     parser: "babel-eslint",
     settings: {
+        // Warning: React version not specified in eslint-plugin-react settings.
+        react: {
+            version: "detect"
+        },
+
         // 解决webpack require各类文件报路径错误
         "import/resolver": {
             alias: {

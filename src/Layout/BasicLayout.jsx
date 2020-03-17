@@ -1,13 +1,18 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout } from 'antd';
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
 } from '@ant-design/icons';
 
+import SiderMenu from 'src/components/SiderMenu';
+
 import './BasicLayout.scss';
 
-const { Header, Sider, Content } = Layout;
+import { menuData } from 'src/routers';
+
+
+const { Header, Content } = Layout;
 
 class LayoutComponent extends React.Component {
     state = {
@@ -27,33 +32,18 @@ class LayoutComponent extends React.Component {
     render() {
         return (
             <Layout className="layout-container">
-                <Sider trigger={null} collapsible collapsed={this.state.collapsed} theme="light">
-                    <div className="logo">
-                        {
-                            this.state.collapsed ? 'Blog' : 'Blog管理后台'
-                        }
-                    </div>
-                    <Menu theme="light" mode="inline" defaultSelectedKeys={['1']}>
-                        <Menu.Item key="1">
-                            <span>nav 1</span>
-                        </Menu.Item>
-                        <Menu.Item key="2">
-                            <span>nav 2</span>
-                        </Menu.Item>
-                        <Menu.Item key="3">
-                            <span>nav 3</span>
-                        </Menu.Item>
-                    </Menu>
-                </Sider>
-                {/* <SiderMenu
-                    logo={logo}
-                    Authorized={Authorized}
-                    theme={navTheme}
-                    onCollapse={this.handleMenuCollapse}
-                    menuData={menuData}
-                    isMobile={isMobile}
-                    {...this.props}
-                /> */}
+                <div className='noselect'>
+                    <SiderMenu
+                        logo='Blog'
+                        theme='light'
+                        collapsed={this.state.collapsed}
+                        onCollapse={this.handleMenuCollapse}
+                        menuData={menuData}
+                        className="noselect"
+                        {...this.props}
+                    />
+                </div>
+
                 <Layout className="site-layout">
                     <Header className="site-layout-background" style={{ padding: 0 }}>
                         {

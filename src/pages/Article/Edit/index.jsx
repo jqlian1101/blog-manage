@@ -1,15 +1,8 @@
-import React, { useEffect } from 'react';
-import { Form, Input, Select, Button } from 'antd';
-
-import SimpleMDE from 'simplemde'
-import marked from 'marked'
-import highlight from 'highlight.js'
-import 'simplemde/dist/simplemde.min.css';
+import React from 'react';
+import { Form, Input, Select, Button, message } from 'antd';
 
 import articleService from 'src/services/article'
-import { useFetch } from 'src/utils/hooks'
-
-// import styles from './index.module.scss';
+import { useFetch, useMarkd } from 'src/utils/hooks'
 
 const { Option } = Select;
 
@@ -22,54 +15,48 @@ const validateMessages = {
     required: '必填',
 };
 
+/**
+ * 创建文章
+ */
 const CreateArticle = () => {
     let smde = null;
-    let tags = [];
+    let tags = [{ id: 1, name: 1 }];
 
-
-    const { response, error } = useFetch(articleService.getTagList)
-    console.log('useFetch response : ', response, error)
+    // 获取tags列表
+    const { response } = useFetch(articleService.getTagList)
     if (response) {
         tags = response.data.result
     }
 
-    const onFinish = values => {
-        console.log(values);
-        console.log(smde.value())
-    };
+    // 生成markdown实例
+    const { marked } = useMarkd('contentTextarea')
+    smde = marked
 
-    useEffect(() => {
-        smde = new SimpleMDE({
-            element: document.getElementById('contentTextarea'),
-            autofocus: true,
-            autosave: true,
-            previewRender(plainText) {
-                return marked(plainText, {
-                    renderer: new marked.Renderer(),
-                    gfm: true,
-                    pedantic: false,
-                    sanitize: false,
-                    tables: true,
-                    breaks: true,
-                    smartLists: true,
-                    smartypants: true,
-                    highlight(code) {
-                        return highlight.highlightAuto(code).value;
-                    },
-                });
-            },
-        })
-    }, []);
+    /**
+     * 点击换成后回调
+     * 数据校验通过后执行
+     */
+    const onFinish = async (values) => {
+        const content = smde.value();
+        const data = { ...values, content }
+
+        if (data.tags) data.tags = data.tags.join(',');
+        if (data.category) data.category = data.category.join(',');
+
+        const res = await articleService.createArticle({ ...data });
+        if (res.code !== 0) return;
+        message.success('创建成功');
+    };
 
     return (
         <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
-            <Form.Item name={['user', 'title']} label="标题" rules={[{ required: true }]}>
+            <Form.Item name={['title']} label="标题" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
-            <Form.Item name={['user', 'keyword']} label="关键字" rules={[{ required: true }]}>
+            <Form.Item name={['keyword']} label="关键字" rules={[{ required: true }]}>
                 <Input />
             </Form.Item>
-            <Form.Item name={['user', 'status']} label='发布状态' rules={[{ required: true }]}>
+            <Form.Item name={['status']} label='发布状态' rules={[{ required: true }]}>
                 <Select
                     placeholder="选择发布状态"
                 >
@@ -77,7 +64,7 @@ const CreateArticle = () => {
                     <Option value="1">发布</Option>
                 </Select>
             </Form.Item>
-            <Form.Item name={['user', 'tags']} label="标签" rules={[{ required: true }]}>
+            <Form.Item name={['tags']} label="标签" rules={[{ required: true }]}>
                 <Select
                     allowClear
                     mode="multiple"
@@ -88,7 +75,7 @@ const CreateArticle = () => {
                     }
                 </Select>
             </Form.Item>
-            <Form.Item name={['user', 'category']} label="分类" rules={[{ required: true }]}>
+            <Form.Item name={['category']} label="分类" rules={[{ required: true }]}>
                 <Select
                     allowClear
                     mode="multiple"
@@ -99,15 +86,14 @@ const CreateArticle = () => {
                     }
                 </Select>
             </Form.Item>
-            <Form.Item name={['user', 'introduction']} label="描述" rules={[{ required: true }]}>
+            <Form.Item name={['summary']} label="描述" rules={[{ required: true }]}>
                 <Input.TextArea />
             </Form.Item>
-
             <Form.Item label="文章内容" >
                 <textarea id="contentTextarea" size="large" />
             </Form.Item>
 
-            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: layout.labelCol.span }}>
                 <Button type="primary" htmlType="submit">提交</Button>
             </Form.Item>
         </Form>
