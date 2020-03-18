@@ -20,12 +20,19 @@ const validateMessages = {
  */
 const CreateArticle = () => {
     let smde = null;
-    let tags = [{ id: 1, name: 1 }];
+    let tags = [];
+    let categories = [];
 
     // 获取tags列表
-    const { response } = useFetch(articleService.getTagList)
-    if (response) {
-        tags = response.data.result
+    const { response: tagsRes } = useFetch(articleService.getTagList)
+    if (tagsRes) {
+        tags = tagsRes.data.result
+    }
+
+    // 获取tags列表
+    const { response: categoryRes } = useFetch(articleService.getTagList)
+    if (categoryRes) {
+        categories = categoryRes.data.result
     }
 
     // 生成markdown实例
@@ -82,7 +89,7 @@ const CreateArticle = () => {
                     placeholder="请选择文章分类"
                 >
                     {
-                        [{ id: 1, name: 1 }].map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)
+                        categories.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)
                     }
                 </Select>
             </Form.Item>

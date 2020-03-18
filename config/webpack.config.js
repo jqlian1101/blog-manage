@@ -476,7 +476,7 @@ module.exports = function(webpackEnv) {
                             use: [
                                 ...getStyleLoaders(
                                     {
-                                        importLoaders: 2,
+                                        importLoaders: 3,
                                         sourceMap:
                                             isEnvProduction &&
                                             shouldUseSourceMap
@@ -505,11 +505,14 @@ module.exports = function(webpackEnv) {
                             use: [
                                 ...getStyleLoaders(
                                     {
-                                        importLoaders: 2,
+                                        importLoaders: 3,
                                         sourceMap:
                                             isEnvProduction &&
                                             shouldUseSourceMap,
-                                        modules: true,
+                                        modules: {
+                                            // localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                                            getLocalIdent: getCSSModuleLocalIdent
+                                        }
                                     },
                                     "sass-loader"
                                 ),
@@ -561,6 +564,7 @@ module.exports = function(webpackEnv) {
                         //         "less-loader"
                         //     )
                         // },
+
                         // "file" loader makes sure those assets get served by WebpackDevServer.
                         // When you `import` an asset, you get its (virtual) filename.
                         // In production, they would get copied to the `build` folder.
