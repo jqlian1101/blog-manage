@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom'
 import { Form, Input, Select, Button, message } from 'antd';
 
 import articleService from 'src/services/article'
@@ -18,19 +19,19 @@ const validateMessages = {
 /**
  * 创建文章
  */
-const CreateArticle = () => {
+const CreateArticle = (props) => {
     let smde = null;
     let tags = [];
     let categories = [];
 
     // 获取tags列表
-    const { response: tagsRes } = useFetch(articleService.getTagList)
+    const { res: tagsRes } = useFetch(articleService.getTagList)
     if (tagsRes) {
         tags = tagsRes.data.result
     }
 
     // 获取tags列表
-    const { response: categoryRes } = useFetch(articleService.getTagList)
+    const { res: categoryRes } = useFetch(articleService.getCategoryList)
     if (categoryRes) {
         categories = categoryRes.data.result
     }
@@ -108,4 +109,4 @@ const CreateArticle = () => {
 };
 
 
-export default CreateArticle;
+export default withRouter(CreateArticle);
