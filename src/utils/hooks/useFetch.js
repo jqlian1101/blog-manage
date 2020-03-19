@@ -23,6 +23,7 @@ export const useFetch = (getFunction, params, execute = true) => {
             const result = await getFunction(par);
             setRes(result);
             setFetch(false);
+            return result;
         } catch (err) {
             console.error(err);
             setFetch(false);
@@ -46,7 +47,6 @@ export const useFetch = (getFunction, params, execute = true) => {
      */
     return { res, fetching, fetchData, setError };
 };
-
 
 export default {
     useFetch

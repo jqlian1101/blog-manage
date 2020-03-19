@@ -26,10 +26,11 @@ module.exports = {
     plugins: ["react-hooks"],
     rules: {
         "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn",
+        "react-hooks/exhaustive-deps": 0,
         "react/jsx-filename-extension": [0],
         "jsx-a11y/anchor-is-valid": [0],
         "no-invalid-this": 0,
-        "no-template-curly-in-string": 0
+        "no-template-curly-in-string": 0,
+        "no-param-reassign": 0
     }
 };

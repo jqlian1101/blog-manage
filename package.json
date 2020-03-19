@@ -149,8 +149,5 @@
         "less": "^3.11.1",
         "less-loader": "^5.0.0",
         "pre-commit": "^1.2.2"
-    },
-    "pre-commit": [
-        "lint"
-    ]
+    }
 }

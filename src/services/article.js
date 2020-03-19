@@ -26,9 +26,17 @@ export const createArticle = params =>
  */
 export const getArticleList = params => request("/article/list", { ...params });
 
+/**
+ * 获取文章详情
+ * @param {id}
+ */
+export const getArticleDetail = params =>
+    request("/article/detail", { ...params });
+
 export default {
     getTagList,
     createArticle,
     getArticleList,
-    getCategoryList
+    getCategoryList,
+    getArticleDetail
 };

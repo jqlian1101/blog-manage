@@ -25,11 +25,11 @@ const columns = [
     },
     {
         title: '创建时间',
-        dataIndex: 'createdDate',
+        dataIndex: 'createDate',
     },
     {
         title: '最后更新时间',
-        dataIndex: 'updatedDate',
+        dataIndex: 'updateDate',
     }
 ];
 
@@ -80,11 +80,11 @@ const ArticleList = (props) => {
         {
             title: '操作',
             dataIndex: 'operation',
-            width: 150,
+            width: 200,
             render: (txt, row) => {
                 const { status } = row;
                 return (
-                    <div>
+                    <div className="noselect">
                         <a onClick={() => editArticle(row)}>编辑</a>
                         <Divider type="vertical" />
                         {
@@ -92,7 +92,6 @@ const ArticleList = (props) => {
                                 <a onClick={() => { changeArticleStatus(true, row) }}>发布</a> :
                                 <a onClick={() => { changeArticleStatus(false, row) }}>取消发布</a>
                         }
-
                         <Divider type="vertical" />
                         <a onClick={() => delArticle(row)}>删除</a>
                     </div>

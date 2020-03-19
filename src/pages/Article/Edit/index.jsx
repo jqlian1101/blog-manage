@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom'
 import { Form, Input, Select, Button, message } from 'antd';
 
 import articleService from 'src/services/article'
-import { useFetch, useMarkd } from 'src/utils/hooks'
+import { useFetch } from 'src/utils/hooks'
+import { searchParse, isNil } from 'src/utils/util'
+import { getMarkedEle } from 'src/utils/markd';
 
 const { Option } = Select;
 
@@ -23,6 +25,44 @@ const CreateArticle = (props) => {
     let smde = null;
     let tags = [];
     let categories = [];
+    let initId = '';   // id存在，则为编辑，否则，创建
+
+
+    const [form] = Form.useForm();
+
+    const { fetchData } = useFetch(articleService.getArticleDetail, {}, false);
+
+    useEffect(() => {
+        smde = getMarkedEle('contentTextarea');
+        initData();
+    }, [])
+
+    const getId = () => {
+        if (initId) return initId;
+        return props.location.search ? searchParse(props.location.search).id : '';
+    }
+
+    // 重置markdown内容
+    const resetCont = (cont = '') => smde.value(cont);
+
+    // 初始化数据
+    const initData = async () => {
+        const id = getId();
+        if (id) {
+            const res = await fetchData({ id })
+            if (!res || res.code !== 0) return;
+            const { detail = {} } = res.data || {};
+            initId = detail.id;
+            resetCont(detail.content || '');
+            form.setFieldsValue({
+                title: detail.title || '',
+                keyword: detail.keyword || '',
+                status: isNil(detail.status) ? '' : detail.status,
+                summary: detail.summary || '',
+                content: detail.content || ''
+            })
+        }
+    }
 
     // 获取tags列表
     const { res: tagsRes } = useFetch(articleService.getTagList)
@@ -36,10 +76,6 @@ const CreateArticle = (props) => {
         categories = categoryRes.data.result
     }
 
-    // 生成markdown实例
-    const { marked } = useMarkd('contentTextarea')
-    smde = marked
-
     /**
      * 点击换成后回调
      * 数据校验通过后执行
@@ -49,30 +85,30 @@ const CreateArticle = (props) => {
         const data = { ...values, content }
 
         if (data.tags) data.tags = data.tags.join(',');
-        if (data.category) data.category = data.category.join(',');
+        if (data.categorys) data.categorys = data.categorys.join(',');
 
-        const res = await articleService.createArticle({ ...data });
+        const res = await articleService.createArticle({ ...data, id: getId() });
         if (res.code !== 0) return;
-        message.success('创建成功');
+        message.success('操作成功');
     };
 
     return (
-        <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
+        <Form {...layout} form={form} name="editArticleForm" onFinish={onFinish} validateMessages={validateMessages}>
             <Form.Item name={['title']} label="标题" rules={[{ required: true }]}>
-                <Input />
+                <Input autoComplete='off' />
             </Form.Item>
             <Form.Item name={['keyword']} label="关键字" rules={[{ required: true }]}>
-                <Input />
+                <Input autoComplete='off' />
             </Form.Item>
             <Form.Item name={['status']} label='发布状态' rules={[{ required: true }]}>
                 <Select
                     placeholder="选择发布状态"
                 >
-                    <Option value="0">草稿</Option>
-                    <Option value="1">发布</Option>
+                    <Option value={0}>草稿</Option>
+                    <Option value={1}>发布</Option>
                 </Select>
             </Form.Item>
-            <Form.Item name={['tags']} label="标签" rules={[{ required: true }]}>
+            <Form.Item name={['tags']} label="标签" >
                 <Select
                     allowClear
                     mode="multiple"
@@ -83,7 +119,7 @@ const CreateArticle = (props) => {
                     }
                 </Select>
             </Form.Item>
-            <Form.Item name={['category']} label="分类" rules={[{ required: true }]}>
+            <Form.Item name={['categorys']} label="分类">
                 <Select
                     allowClear
                     mode="multiple"
@@ -107,6 +143,5 @@ const CreateArticle = (props) => {
         </Form>
     );
 };
-
 
 export default withRouter(CreateArticle);

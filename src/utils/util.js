@@ -1,66 +1,22 @@
-
-const hasOwn = /* istanbul ignore next */ Object.prototype.hasOwnProperty;
-
-
-const is = /* istanbul ignore next */ (x, y) => {
-    if (x === y) {
-        return x !== 0 || y !== 0 || 1 / x === 1 / y;
+export const searchParse = (search = "") => {
+    const resultObj = {};
+    if (search && search.length > 1) {
+        search = search.substring(1);
+        let items = search.split("&");
+        for (let index = 0; index < items.length; index++) {
+            if (!items[index]) {
+                continue;
+            }
+            let kv = items[index].split("=");
+            resultObj[kv[0]] = typeof kv[1] === "undefined" ? "" : kv[1];
+        }
     }
-    return x !== x && y !== y; // eslint-disable-line
+    return resultObj;
 };
-
 
 export const isNil = x => x === null || x === undefined;
 
-
-export const cancelablePromise = /* istanbul ignore next */ promise => {
-    let hasCanceled = false;
-
-    const wrappedPromise = new Promise((resolve, reject) => {
-        promise.then(val =>
-            // eslint-disable-next-line prefer-promise-reject-errors
-            hasCanceled ? reject({ isCanceled: true }) : resolve(val)
-        );
-        promise.catch(error =>
-            // eslint-disable-next-line prefer-promise-reject-errors
-            hasCanceled ? reject({ isCanceled: true }) : reject(error)
-        );
-    });
-
-    return {
-        promise: wrappedPromise,
-        cancel() {
-            hasCanceled = true;
-        }
-    };
-};
-
-export const shallowEqual = /* istanbul ignore next */ (objA, objB) => {
-    if (is(objA, objB)) return true;
-
-    if (
-        typeof objA !== "object" ||
-        objA === null ||
-        typeof objB !== "object" ||
-        objB === null
-    ) {
-        return false;
-    }
-
-    const keysA = Object.keys(objA);
-    const keysB = Object.keys(objB);
-
-    if (keysA.length !== keysB.length) return false;
-
-    for (let i = 0; i < keysA.length; i++) {
-        //eslint-disable-line
-        if (
-            !hasOwn.call(objB, keysA[i]) ||
-            !is(objA[keysA[i]], objB[keysA[i]])
-        ) {
-            return false;
-        }
-    }
-
-    return true;
+export default {
+    searchParse,
+    isNil
 };
