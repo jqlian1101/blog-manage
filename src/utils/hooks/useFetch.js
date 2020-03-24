@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
  * 4. （甚至在参数发生变化时只需要传入更改的参数就OK）已删除
  * @param getFunction 发送请求的函数
  * @param params 参数
- * @param initRes 初始化值
  * @param execute 是否立即执行请求函数
  */
 

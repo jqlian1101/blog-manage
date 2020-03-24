@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom'
-import { Table, Divider } from 'antd';
+import { Table, Divider, message } from 'antd';
 
 import { ARTICLE_STATUS } from 'src/common/constant'
 import articleService from 'src/services/article'
@@ -40,24 +40,22 @@ const ArticleList = (props) => {
     const { onChange: onPaginationChange, current, pageSize, total } = pagination;
 
     React.useEffect(() => {
-        getData();
+        resetTableData();
     }, [])
 
-    const { res, fetching, fetchData } = useFetch(articleService.getArticleList, { pageSize: 1, current }, false);
+    const { fetching, fetchData } = useFetch(articleService.getArticleList, { pageSize: 1, current }, false);
 
-    const getData = async ({ size = pageSize, cur = current } = {}) => {
-        await fetchData({ pageSize: size, current: cur });
+    const resetTableData = async ({ size = pageSize, cur = current } = {}) => {
+        const res = await fetchData({ pageSize: size, current: cur });
+        handleResData(res)
     }
 
-    const handleResData = (res, fetching) => {
-        if (!res || !fetching) return;
+    const handleResData = (res) => {
+        if (!res) return;
         const { result, count, pageSize, current } = res.data || {}
         tableData = result;
         onPaginationChange(current, pageSize, count)
-
     }
-
-    handleResData(res, fetching)
 
     const editArticle = (row) => {
         props.history.push({
@@ -66,12 +64,16 @@ const ArticleList = (props) => {
         })
     }
 
-    const changeArticleStatus = (bool, row) => {
-        console.log(bool, row);
+    const changeArticleStatus = async (bool, row) => {
+        await articleService.setArticleStatus({ id: row.id, status: bool })
+        message.success('操作成功');
+        resetTableData();
     }
 
-    const delArticle = (row) => {
-        console.log(row);
+    const delArticle = async (row) => {
+        await articleService.deleteArticle({ id: row.id })
+        message.success('操作成功');
+        resetTableData();
     }
 
     const tableColumns = [
@@ -88,8 +90,8 @@ const ArticleList = (props) => {
                         <Divider type="vertical" />
                         {
                             status === 0 ?
-                                <a onClick={() => { changeArticleStatus(true, row) }}>发布</a> :
-                                <a onClick={() => { changeArticleStatus(false, row) }}>取消发布</a>
+                                <a onClick={() => { changeArticleStatus(1, row) }}>发布</a> :
+                                <a onClick={() => { changeArticleStatus(0, row) }}>取消发布</a>
                         }
                         <Divider type="vertical" />
                         <a onClick={() => delArticle(row)}>删除</a>
@@ -100,17 +102,19 @@ const ArticleList = (props) => {
     ]
 
     const handleTableChange = (page) => {
-        getData({ size: page.pageSize, cur: page.current });
+        console.log('handlechange')
+        resetTableData({ size: page.pageSize, cur: page.current });
     }
 
     const tablePagCfg = {
         current,
         pageSize,
         total,
-        // hideOnSinglePage: true, // 只有一页时是否隐藏分页器
+        hideOnSinglePage: true, // 只有一页时是否隐藏分页器
         showQuickJumper: true,
         showSizeChanger: true,
-        showTotal: () => `共${total}页`
+        showTotal: () => `共${total}页`,
+        onChange: (page, pageSize) => handleTableChange({ current: page, pageSize })
     };
 
     return (
@@ -120,7 +124,6 @@ const ArticleList = (props) => {
             dataSource={tableData}
             pagination={tablePagCfg}
             loading={fetching}
-            onChange={handleTableChange}
         />
     )
 };

@@ -33,10 +33,26 @@ export const getArticleList = params => request("/article/list", { ...params });
 export const getArticleDetail = params =>
     request("/article/detail", { ...params });
 
+/**
+ * 删除文章
+ * @param {id}
+ */
+export const deleteArticle = params => request("/article/del", { ...params });
+
+/**
+ * 修改发布状态
+ * @param {object}  { id: article.id, status: 0 | 1 }  0：草稿，1：发布
+ */
+
+export const setArticleStatus = params =>
+    request("/article/change-status", { ...params });
+
 export default {
     getTagList,
     createArticle,
     getArticleList,
     getCategoryList,
-    getArticleDetail
+    getArticleDetail,
+    deleteArticle,
+    setArticleStatus
 };

@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use(
             message.error(response.statusText || "数据请求失败");
         }
         if (data.code !== 0) {
-            message.error(response.statusText || data.message || "系统异常");
+            message.error(data.message || "系统异常");
             return Promise.reject(data);
         }
         return data;
