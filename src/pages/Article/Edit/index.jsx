@@ -18,22 +18,28 @@ const validateMessages = {
     required: '必填',
 };
 
+const isDelete = (newArr = [], source = []) => {
+    return source.filter(item => !newArr.includes(item));
+}
+
 /**
  * 创建文章
  */
 const CreateArticle = (props) => {
-    let smde = null;
+    // let smde = null;
     let tags = [];
     let categories = [];
     let initId = '';   // id存在，则为编辑，否则，创建
 
+    // let cacheTags = [];     // 缓存已设置的标签，用以标记删除
+    // let cacheCatetories = [];
 
     const [form] = Form.useForm();
 
     const { fetchData } = useFetch(articleService.getArticleDetail, {}, false);
 
     useEffect(() => {
-        smde = getMarkedEle('contentTextarea');
+        initMDEle();
         initData();
     }, [])
 
@@ -43,7 +49,11 @@ const CreateArticle = (props) => {
     }
 
     // 重置markdown内容
-    const resetCont = (cont = '') => smde.value(cont);
+    const initMDEle = () => {
+        form.smde = getMarkedEle('contentTextarea')
+    }
+    const resetCont = (cont = '') => form.smde.value(cont);
+    const getMDVal = () => form.smde.value();
 
     // 初始化数据
     const initData = async () => {
@@ -53,13 +63,22 @@ const CreateArticle = (props) => {
             if (!res || res.code !== 0) return;
             const { detail = {} } = res.data || {};
             initId = detail.id;
+
             resetCont(detail.content || '');
+
+            const { tags = [], categories = [] } = detail;
+
+            form.cacheTags = tags.map(item => item.id);
+            form.cacheCatetories = categories.map(item => item.id);
+
             form.setFieldsValue({
                 title: detail.title || '',
                 keyword: detail.keyword || '',
                 status: isNil(detail.status) ? '' : detail.status,
                 summary: detail.summary || '',
-                content: detail.content || ''
+                content: detail.content || '',
+                tags: [...form.cacheTags],
+                categories: [...form.cacheCatetories]
             })
         }
     }
@@ -81,11 +100,18 @@ const CreateArticle = (props) => {
      * 数据校验通过后执行
      */
     const onFinish = async (values) => {
-        const content = smde.value();
-        const data = { ...values, content }
+        const content = getMDVal();
+        const data = { ...values, content };
 
-        if (data.tags) data.tags = data.tags.join(',');
-        if (data.categorys) data.categorys = data.categorys.join(',');
+        data.tags = data.tags || [];
+        data.categories = data.categories || [];
+
+        // 编辑过程中删除的tag和category
+        data.deleteTag = isDelete(data.tags, form.cacheTags);
+        data.deleteCategory = isDelete(data.categories, form.cacheCatetories);
+
+        // if (data.tags) data.tags = data.tags.join(',');
+        // if (data.categories) data.categories = data.categories.join(',');
 
         const res = await articleService.createArticle({ ...data, id: getId() });
         if (res.code !== 0) return;
@@ -119,7 +145,7 @@ const CreateArticle = (props) => {
                     }
                 </Select>
             </Form.Item>
-            <Form.Item name={['categorys']} label="分类">
+            <Form.Item name={['categories']} label="分类">
                 <Select
                     allowClear
                     mode="multiple"

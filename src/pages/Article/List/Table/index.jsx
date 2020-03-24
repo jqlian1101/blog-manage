@@ -41,7 +41,6 @@ const ArticleList = (props) => {
 
     React.useEffect(() => {
         getData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const { res, fetching, fetchData } = useFetch(articleService.getArticleList, { pageSize: 1, current }, false);
