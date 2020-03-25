@@ -36,17 +36,18 @@ const columns = [
 let tableData = [];
 
 const ArticleList = (props) => {
+    const { title, keyword, status } = props.searchRules;
     const { pagination } = usePagination();
     const { onChange: onPaginationChange, current, pageSize, total } = pagination;
 
     React.useEffect(() => {
         resetTableData();
-    }, [])
+    }, [title, keyword, status])
 
     const { fetching, fetchData } = useFetch(articleService.getArticleList, { pageSize: 1, current }, false);
 
     const resetTableData = async ({ size = pageSize, cur = current } = {}) => {
-        const res = await fetchData({ pageSize: size, current: cur });
+        const res = await fetchData({ ...props.searchRules, pageSize: size, current: cur });
         handleResData(res)
     }
 
@@ -102,7 +103,6 @@ const ArticleList = (props) => {
     ]
 
     const handleTableChange = (page) => {
-        console.log('handlechange')
         resetTableData({ size: page.pageSize, cur: page.current });
     }
 
@@ -127,5 +127,9 @@ const ArticleList = (props) => {
         />
     )
 };
+
+ArticleList.defaultProps = {
+    searchRules: {}
+}
 
 export default withRouter(ArticleList);

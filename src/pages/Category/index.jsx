@@ -7,7 +7,7 @@ import React from 'react';
 const Index = () => {
     return (
         <div>
-            管理
+            分类管理
         </div>
     );
 };
