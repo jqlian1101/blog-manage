@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom'
 import { Form, Input, Select, Button, message } from 'antd';
 
-import articleService from 'src/services/article'
+import { articleService, tagService, categoryService } from 'src/services';
+
 import { useFetch } from 'src/utils/hooks'
 import { searchParse, isNil } from 'src/utils/util'
 import { getMarkedEle } from 'src/utils/markd';
@@ -84,13 +85,13 @@ const CreateArticle = (props) => {
     }
 
     // 获取tags列表
-    const { res: tagsRes } = useFetch(articleService.getTagList)
+    const { res: tagsRes } = useFetch(tagService.getTagList)
     if (tagsRes) {
         tags = tagsRes.data.result
     }
 
     // 获取tags列表
-    const { res: categoryRes } = useFetch(articleService.getCategoryList)
+    const { res: categoryRes } = useFetch(categoryService.getCategoryList)
     if (categoryRes) {
         categories = categoryRes.data.result
     }

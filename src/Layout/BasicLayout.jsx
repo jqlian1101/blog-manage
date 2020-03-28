@@ -9,7 +9,7 @@ import SiderMenu from 'src/components/SiderMenu';
 
 import './BasicLayout.scss';
 
-import { menuData } from 'src/routers';
+import routers from 'src/routers';
 
 
 const { Header, Content } = Layout;
@@ -38,7 +38,7 @@ class LayoutComponent extends React.Component {
                         theme='light'
                         collapsed={this.state.collapsed}
                         onCollapse={this.handleMenuCollapse}
-                        menuData={menuData}
+                        menuData={routers.menuData}
                         className="noselect"
                         {...this.props}
                     />

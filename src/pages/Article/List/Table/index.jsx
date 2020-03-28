@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom'
 import { Table, Divider, message } from 'antd';
 
+import { articleService } from 'src/services'
+
 import { ARTICLE_STATUS } from 'src/common/constant'
-import articleService from 'src/services/article'
-import { usePagination, useFetch } from 'src/utils/hooks';
+import { usePagination } from 'src/utils/hooks';
+
 
 const columns = [
     {
@@ -33,28 +35,30 @@ const columns = [
     }
 ];
 
-let tableData = [];
-
 const ArticleList = (props) => {
     const { title, keyword, status } = props.searchRules;
+
+    const [fetching, setFetching] = useState(false);
+    const [tableData, setTableData] = useState([]);
     const { pagination } = usePagination();
+
     const { onChange: onPaginationChange, current, pageSize, total } = pagination;
 
     React.useEffect(() => {
         resetTableData();
     }, [title, keyword, status])
 
-    const { fetching, fetchData } = useFetch(articleService.getArticleList, { pageSize: 1, current }, false);
-
     const resetTableData = async ({ size = pageSize, cur = current } = {}) => {
-        const res = await fetchData({ ...props.searchRules, pageSize: size, current: cur });
+        setFetching(true);
+        const res = await articleService.getArticleList({ ...props.searchRules, pageSize: size, current: cur })
         handleResData(res)
     }
 
     const handleResData = (res) => {
         if (!res) return;
         const { result, count, pageSize, current } = res.data || {}
-        tableData = result;
+        setTableData(result);
+        setFetching(false);
         onPaginationChange(current, pageSize, count)
     }
 

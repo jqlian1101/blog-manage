@@ -5,7 +5,10 @@ import React from "react";
 const ArticleEdit = React.lazy(() => import("./pages/Article/Edit"));
 const ArticleList = React.lazy(() => import("./pages/Article/List"));
 
-export const menuData = [
+const Tags = React.lazy(() => import("./pages/Tags"));
+const Category = React.lazy(() => import("./pages/Category"));
+
+const menuData = [
     {
         path: "/article",
         name: "博文",
@@ -23,52 +26,47 @@ export const menuData = [
                 component: () => <ArticleEdit />
             }
         ]
-    }
-    // {
-    //     name: "account",
-    //     icon: "user",
-    //     path: "/account",
-    //     locale: "menu.account",
-    //     children: [
-    //         {
-    //             path: "/account/settings",
-    //             name: "settings",
-    //             locale: "menu.account.settings",
-    //             children: [
-    //                 {
-    //                     path: "/account/settings",
-    //                     redirect: "/account/settings/base",
-    //                     exact: true,
-    //                     locale: "menu.account.settings"
-    //                 },
-    //                 {
-    //                     path: "/account/settings/base",
-    //                     exact: true,
-    //                     locale: "menu.account.settings"
-    //                 },
-    //                 {
-    //                     path: "/account/settings/personalLink",
-    //                     exact: true,
-    //                     locale: "menu.account.settings"
-    //                 }
-    //             ]
-    //         }
-    //     ]
-    // }
-];
-
-export const routers = [
-    {
-        path: "/article/edit",
-        name: "ArticleEdit",
-        component: () => <ArticleEdit />,
-        exact: true
-        // title: "添加/修改"
     },
     {
-        path: "/article/list",
-        name: "博文管理",
-        exact: true,
-        component: () => <ArticleList />
+        path: "/tags",
+        name: "标签",
+        children: [
+            {
+                path: "/tags/list",
+                name: "标签管理",
+                exact: true,
+                component: () => <Tags />
+            }
+        ]
+    },
+    {
+        path: "/category",
+        name: "分类",
+        children: [
+            {
+                path: "/category/list",
+                name: "分类管理",
+                exact: true,
+                component: () => <Category />
+            }
+        ]
     }
 ];
+
+const routers = [];
+
+const initRouters = (r = []) => {
+    r.map(item => {
+        if (item.component) routers.push(item);
+        if (Array.isArray(item.children)) {
+            initRouters(item.children);
+        }
+    });
+};
+
+initRouters(menuData);
+
+export default {
+    menuData,
+    routers
+};

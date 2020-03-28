@@ -31,6 +31,7 @@ module.exports = {
         "jsx-a11y/anchor-is-valid": [0],
         "no-invalid-this": 0,
         "no-template-curly-in-string": 0,
-        "no-param-reassign": 0
+        "no-param-reassign": 0,
+        "array-callback-return": 0
     }
 };

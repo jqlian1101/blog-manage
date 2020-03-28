@@ -5,17 +5,6 @@
 import request from "./utils/request";
 
 /**
- * 获取文章 标签 列表
- */
-export const getTagList = params => request("/article/tag-list", { ...params });
-
-/**
- * 获取文章 分类 列表
- */
-export const getCategoryList = params =>
-    request("/article/category-list", { ...params });
-
-/**
  * 创建文章
  */
 export const createArticle = params =>
@@ -46,13 +35,3 @@ export const deleteArticle = params => request("/article/del", { ...params });
 
 export const setArticleStatus = params =>
     request("/article/change-status", { ...params });
-
-export default {
-    getTagList,
-    createArticle,
-    getArticleList,
-    getCategoryList,
-    getArticleDetail,
-    deleteArticle,
-    setArticleStatus
-};
