@@ -10,6 +10,7 @@ import { getMarkedEle } from 'src/utils/markd';
 
 const { Option } = Select;
 
+
 const layout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 18 },
@@ -37,8 +38,6 @@ const CreateArticle = (props) => {
 
     const [form] = Form.useForm();
 
-    const { fetchData } = useFetch(articleService.getArticleDetail, {}, false);
-
     useEffect(() => {
         initMDEle();
         initData();
@@ -60,7 +59,7 @@ const CreateArticle = (props) => {
     const initData = async () => {
         const id = getId();
         if (id) {
-            const res = await fetchData({ id })
+            const res = await articleService.getArticleDetail({ id })
             if (!res || res.code !== 0) return;
             const { detail = {} } = res.data || {};
             initId = detail.id;
@@ -87,13 +86,13 @@ const CreateArticle = (props) => {
     // 获取tags列表
     const { res: tagsRes } = useFetch(tagService.getTagList)
     if (tagsRes) {
-        tags = tagsRes.data.result
+        tags = tagsRes.data.result || []
     }
 
     // 获取tags列表
-    const { res: categoryRes } = useFetch(categoryService.getCategoryList)
+    const { res: categoryRes } = useFetch(categoryService.getList)
     if (categoryRes) {
-        categories = categoryRes.data.result
+        categories = categoryRes.data.result || []
     }
 
     /**
