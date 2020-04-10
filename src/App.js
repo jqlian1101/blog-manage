@@ -1,14 +1,15 @@
 // import React from "react";
 import React, { Suspense } from "react";
-
 import { Route, Switch } from "react-router-dom";
+
+import Loading from 'src/components/Loading'
 
 import Layout from "./Layout/BasicLayout";
 import routers from "./routers";
 
 const App = () => {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loading />}>
             <Switch>
                 <Layout>
                     {routers.routers.map((item, index) => {

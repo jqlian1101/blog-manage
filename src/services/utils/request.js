@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
     }
 );
 
-export function request(
+export function request (
     url,
     data = {},
     {
