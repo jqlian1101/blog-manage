@@ -8,6 +8,9 @@ const ArticleList = React.lazy(() => import("./pages/Article/List"));
 const Tags = React.lazy(() => import("./pages/Tags"));
 const Category = React.lazy(() => import("./pages/Category"));
 
+const Comment = React.lazy(() => import("./pages/Messages/Comment"));
+const Replies = React.lazy(() => import("./pages/Messages/Replies"));
+
 const menuData = [
     {
         path: "/article",
@@ -48,6 +51,24 @@ const menuData = [
                 name: "分类管理",
                 exact: true,
                 component: () => <Category />
+            }
+        ]
+    },
+    {
+        path: "/messages",
+        name: "留言",
+        children: [
+            {
+                path: "/messages/comment",
+                name: "评论管理",
+                exact: true,
+                component: () => <Comment />
+            },
+            {
+                path: "/messages/replies",
+                name: "评论回复",
+                exact: true,
+                component: () => <Replies />
             }
         ]
     }
