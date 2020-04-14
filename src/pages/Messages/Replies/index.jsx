@@ -2,12 +2,12 @@ import React from 'react';
 
 
 /**
- * 分类管理
+ * 评论回复
  */
 const Index = () => {
     return (
         <div>
-            留言管理
+            评论回复
         </div>
     );
 };

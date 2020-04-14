@@ -32,33 +32,6 @@ export const usePagination = (options = {}) => {
         [current, total, pageSize]
     );
 
-    // const changeCurrent = useCallback(
-    //     c => {
-    //         onChange(c, pageSize, total);
-    //     },
-    //     [onChange, pageSize, total]
-    // );
-
-    // const changePageSize = useCallback(
-    //     p => {
-    //         onChange(current, p, total);
-    //     },
-    //     [onChange, current, total]
-    // );
-
-    // const changeTotal = total => {
-    //     console.log("changetotal : ", total);
-    //     // setTotal(total);
-    // };
-
-    // const changeTotal = useCallback(
-    //     t => {
-    //         console.log("changeTotal : ", t);
-    //         onChange(current, pageSize, t);
-    //     },
-    //     [onChange, current, pageSize]
-    // );
-
     return {
         pagination: {
             current,
@@ -66,9 +39,6 @@ export const usePagination = (options = {}) => {
             total,
             totalPage,
             onChange
-            // changeCurrent,
-            // changePageSize
-            // changeTotal
         }
     };
 };
