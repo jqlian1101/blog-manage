@@ -4,20 +4,16 @@ import { Table, message, Divider } from 'antd';
 
 import { COMMENT_STATUS } from 'src/common/constant'
 
-import { commentService } from 'src/services'
+import { replyService } from 'src/services'
 import { usePagination } from 'src/utils/hooks';
 
 const columns = [
     {
-        title: 'id',
-        dataIndex: 'id',
+        title: '评论id',
+        dataIndex: 'commentId',
     },
     {
-        title: '文章标题',
-        dataIndex: 'topicTitle',
-    },
-    {
-        title: '评论内容',
+        title: '回复内容',
         dataIndex: 'content',
     },
     {
@@ -32,15 +28,7 @@ const columns = [
         dataIndex: 'likeNum',
     },
     {
-        title: '回复',
-        dataIndex: 'replyNum',
-    },
-    {
-        title: '评论者',
-        dataIndex: 'fromUid',
-    },
-    {
-        title: '评论时间',
+        title: '回复时间',
         dataIndex: 'createDate',
         width: 200
     },
@@ -61,7 +49,7 @@ const TableList = (props) => {
 
     const resetTableData = async ({ size = pageSize, cur = current } = {}) => {
         setFetching(true);
-        const res = await commentService.getList({ ...props.searchRules, pageSize: size, current: cur })
+        const res = await replyService.getList({ ...props.searchRules, pageSize: size, current: cur })
         handleResData(res)
     }
 
@@ -77,7 +65,7 @@ const TableList = (props) => {
      * 删除评论
      */
     const delFn = async (row) => {
-        await commentService.del({ id: row.id })
+        await replyService.del({ id: row.id })
         message.success('操作成功');
         resetTableData();
     }
@@ -86,7 +74,7 @@ const TableList = (props) => {
      * 修改发布状态
      */
     const resetStatus = async (row) => {
-        await commentService.resetStatus({ id: row.id, status: row.status === 0 ? 1 : 0 })
+        await replyService.resetStatus({ id: row.id, status: row.status === 0 ? 1 : 0 })
         message.success('操作成功');
         resetTableData();
     }
