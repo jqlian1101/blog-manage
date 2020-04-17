@@ -1,6 +1,7 @@
 import axios from "axios";
 import { message } from "antd";
 
+import { getUserToken } from 'src/common/utils';
 import { getUrl } from "./config";
 
 const axiosInstance = axios.create({
@@ -54,6 +55,10 @@ export function request (
     // 通用参数
     let common = {};
 
+    const headers = {
+        'Authorization': `Bearer ${getUserToken()}aa`
+    }
+
     // 生成请求数据
     let requestData = { ...common, ...data };
 
@@ -61,12 +66,21 @@ export function request (
     const config = {
         ...otherCfg,
         method,
+        headers,
         url: getUrl(url, hostKey),
         data: requestData
     };
 
     return axiosInstance.request(config).then(data => {
-        if (data.code !== 0) return Promise.reject(data);
+        if (data.code !== 0) {
+            return Promise.reject(data);
+        }
+        return data;
+    }).catch(data => {
+        // 暂未登录
+        if (data.code === 11005 || data.code === 11007) {
+            window.location.href = '/'
+        }
         return data;
     });
 }

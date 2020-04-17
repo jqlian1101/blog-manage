@@ -55,7 +55,7 @@ const ArticleList = (props) => {
     }
 
     const handleResData = (res) => {
-        if (!res) return;
+        if (!res || res.code !== 0) return;
         const { result, count, pageSize, current } = res.data || {}
         setTableData(result);
         setFetching(false);
@@ -70,13 +70,15 @@ const ArticleList = (props) => {
     }
 
     const changeArticleStatus = async (bool, row) => {
-        await articleService.setArticleStatus({ id: row.id, status: bool })
+        const res = await articleService.setArticleStatus({ id: row.id, status: bool })
+        if (!res || res.code !== 0) return;
         message.success('操作成功');
         resetTableData();
     }
 
     const delArticle = async (row) => {
-        await articleService.deleteArticle({ id: row.id })
+        const res = await articleService.deleteArticle({ id: row.id });
+        if (!res || res.code !== 0) return;
         message.success('操作成功');
         resetTableData();
     }

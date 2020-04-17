@@ -6,6 +6,7 @@ import {
 } from '@ant-design/icons';
 
 import SiderMenu from 'src/components/SiderMenu';
+import { isLogin } from 'src/common/utils';
 
 import './BasicLayout.scss';
 
@@ -19,6 +20,10 @@ class LayoutComponent extends React.Component {
         collapsed: false,
     };
 
+    componentDidMount () {
+        if (!isLogin()) window.location.href = '/';
+    }
+
     /**
      * @this
      * @memberof LayoutComponent
@@ -29,7 +34,7 @@ class LayoutComponent extends React.Component {
         });
     };
 
-    render() {
+    render () {
         return (
             <Layout className="layout-container">
                 <div className='noselect'>

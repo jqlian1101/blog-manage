@@ -2,6 +2,7 @@ import React from "react";
 
 // import ArticleEdit from "./pages/Article/Edit";
 // import ArticleList from "./pages/Article/List";
+
 const ArticleEdit = React.lazy(() => import("./pages/Article/Edit"));
 const ArticleList = React.lazy(() => import("./pages/Article/List"));
 
